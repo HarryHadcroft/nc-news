@@ -110,3 +110,41 @@ describe('GET/api/atricles/:article_id', () => {
         })
     });
 });
+
+describe('GET/api/articles', () => {
+    test('should return a 200 status code', () => {
+        return request(app)
+        .get("/api/articles")
+        .expect(200)
+    });
+    test('should return an array of article objects', () => {
+        return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then((response) => {
+            const articles = response.body
+            articles.forEach((article) => {
+                expect(article).toMatchObject({
+                    author: expect.any(String),
+                    title: expect.any(String),
+                    article_id: expect.any(Number),
+                    topic: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+                    article_img_url: expect.any(String),
+                    comment_count: expect.any(String)
+                })
+            })
+        })
+    });
+    test('should return an array of articles sorted by date in descending order', () => {
+        return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then((response) => {
+            expect(response.body).toBeSortedBy("created_at", {
+                descending: true
+            })
+        })
+    });
+});
