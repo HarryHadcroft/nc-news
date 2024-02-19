@@ -4,9 +4,6 @@ const db = require("../db/connection")
 const data = require("../db/data/test-data/index")
 const seed = require("../db/seeds/seed")
 
-// beforeEach(() => {
-//     seed(data)
-// })
 
 afterAll(() => {
     db.end()
@@ -31,6 +28,15 @@ describe('GET/api/topics', () => {
                     description: expect.any(String)
                 })
             })
+        })
+    });
+    test('should return appropriate error when endpoint misspelled', () => {
+        return request(app)
+        .get("/api.topcs")
+        .expect(404)
+        .then((response) => {
+            const error = response.body
+            expect(error.msg).toBe("Cannot find path")
         })
     });
 });
