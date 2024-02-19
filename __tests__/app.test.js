@@ -66,3 +66,11 @@ describe('GET/api', () => {
         })
     });
 });
+
+describe('GET/api/atricles/:article_id', () => {
+    test('should return a 200 status code', () => {
+        return request(app)
+        .get("/api/articles/3")
+        .expect(200)
+    });
+});
