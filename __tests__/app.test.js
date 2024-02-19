@@ -97,7 +97,6 @@ describe('GET/api/atricles/:article_id', () => {
         .expect(404)
         .then((response) => {
             const error = response.body
-            console.log(error)
             expect(error.msg).toBe("Article does not exist")
         })
     });
@@ -107,7 +106,6 @@ describe('GET/api/atricles/:article_id', () => {
         .expect(400)
         .then((response) => {
             const error = response.body
-            console.log(error)
             expect(error.msg).toBe("Bad request")
         })
     });
