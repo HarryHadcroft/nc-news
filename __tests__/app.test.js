@@ -56,4 +56,13 @@ describe('GET/api', () => {
             expect(response.body).toEqual(endpoints)
         })
     });
+    test('should return appropriate error when endpoint is mis-typed', () => {
+        return request(app)
+        .get("/ap")
+        .expect(404)
+        .then((response) => {
+            const error = response.body
+            expect(error.msg).toBe("Cannot find path")
+        })
+    });
 });
