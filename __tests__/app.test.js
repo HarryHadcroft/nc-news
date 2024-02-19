@@ -66,3 +66,47 @@ describe('GET/api', () => {
         })
     });
 });
+
+describe('GET/api/atricles/:article_id', () => {
+    test('should return a 200 status code', () => {
+        return request(app)
+        .get("/api/articles/3")
+        .expect(200)
+    });
+    test('should return an article object corresponding to id input', () => {
+        return request(app)
+        .get("/api/articles/3")
+        .expect(200)
+        .then((response) => {
+            const article = response.body.article
+            expect(article).toMatchObject({
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: 3,
+                body: expect.any(String),
+                topic: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                article_img_url: expect.any(String)
+            })
+        })
+    });
+    test('should return appropriate error and message when passed a valid but non-existant article ID', () => {
+        return request(app)
+        .get("/api/articles/999")
+        .expect(404)
+        .then((response) => {
+            const error = response.body
+            expect(error.msg).toBe("Article does not exist")
+        })
+    });
+    test('should return appropriate error and message when passed an invalid article ID', () => {
+        return request(app)
+        .get("/api/articles/invalid-id")
+        .expect(400)
+        .then((response) => {
+            const error = response.body
+            expect(error.msg).toBe("Bad request")
+        })
+    });
+});
