@@ -3,6 +3,7 @@ const app = require("../app")
 const db = require("../db/connection")
 const data = require("../db/data/test-data/index")
 const seed = require("../db/seeds/seed")
+const endpoints = require("../endpoints.json")
 
 
 afterAll(() => {
@@ -33,6 +34,31 @@ describe('GET/api/topics', () => {
     test('should return appropriate error when endpoint misspelled', () => {
         return request(app)
         .get("/api.topcs")
+        .expect(404)
+        .then((response) => {
+            const error = response.body
+            expect(error.msg).toBe("Cannot find path")
+        })
+    });
+});
+
+describe('GET/api', () => {
+    test('Should return a 200 status code', () => {
+        return request(app)
+        .get("/api")
+        .expect(200)
+    });
+    test('Should return an object describing all available endpoints', () => {
+        return request(app)
+        .get("/api")
+        .expect(200)
+        .then((response) => {
+            expect(response.body).toEqual(endpoints)
+        })
+    });
+    test('should return appropriate error when endpoint is mis-typed', () => {
+        return request(app)
+        .get("/ap")
         .expect(404)
         .then((response) => {
             const error = response.body
