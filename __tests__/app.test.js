@@ -91,4 +91,24 @@ describe('GET/api/atricles/:article_id', () => {
             })
         })
     });
+    test('should return appropriate error and message when passed a valid but non-existant article ID', () => {
+        return request(app)
+        .get("/api/articles/999")
+        .expect(404)
+        .then((response) => {
+            const error = response.body
+            console.log(error)
+            expect(error.msg).toBe("Article does not exist")
+        })
+    });
+    test('should return appropriate error and message when passed an invalid article ID', () => {
+        return request(app)
+        .get("/api/articles/invalid-id")
+        .expect(400)
+        .then((response) => {
+            const error = response.body
+            console.log(error)
+            expect(error.msg).toBe("Bad request")
+        })
+    });
 });
