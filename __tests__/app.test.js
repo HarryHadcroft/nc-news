@@ -18,8 +18,8 @@ describe("GET/api/topics", () => {
       .get("/api/topics")
       .expect(200)
       .then((response) => {
-        expect(response.body.topics.length).toBe(3);
         const topics = response.body.topics;
+        expect(response.body.topics.length).toBe(3);
         topics.forEach((topic) => {
           expect(topic).toMatchObject({
             slug: expect.any(String),
@@ -48,7 +48,7 @@ describe("GET/api", () => {
       .get("/api")
       .expect(200)
       .then((response) => {
-        expect(response.body).toEqual(endpoints);
+        expect(response.body.allEndpoints).toEqual(endpoints);
       });
   });
   test("should return appropriate error when endpoint is mis-typed", () => {
@@ -113,7 +113,7 @@ describe("GET/api/articles", () => {
       .get("/api/articles")
       .expect(200)
       .then((response) => {
-        const articles = response.body;
+        const articles = response.body.articles;
         articles.forEach((article) => {
           expect(article).toMatchObject({
             author: expect.any(String),
@@ -133,7 +133,7 @@ describe("GET/api/articles", () => {
       .get("/api/articles")
       .expect(200)
       .then((response) => {
-        expect(response.body).toBeSortedBy("created_at", {
+        expect(response.body.articles).toBeSortedBy("created_at", {
           descending: true,
         });
       });
@@ -143,7 +143,7 @@ describe("GET/api/articles", () => {
       .get("/api/articles?topic=mitch")
       .expect(200)
       .then((response) => {
-        response.body.forEach((article) => {
+        response.body.articles.forEach((article) => {
           expect(article.topic).toBe("mitch");
         });
       });
@@ -153,7 +153,7 @@ describe("GET/api/articles", () => {
       .get("/api/articles?author=rogersop")
       .expect(200)
       .then((response) => {
-        response.body.forEach((article) => {
+        response.body.articles.forEach((article) => {
           expect(article.author).toBe("rogersop");
         });
       });
@@ -185,8 +185,8 @@ describe("GET/api/articles/:article_id/comments", () => {
       .get("/api/articles/1/comments")
       .expect(200)
       .then((response) => {
-        expect(response.body.length).toBe(11);
-        response.body.forEach((article) => {
+        expect(response.body.articles.length).toBe(11);
+        response.body.articles.forEach((article) => {
           expect(article).toMatchObject({
             comment_id: expect.any(Number),
             votes: expect.any(Number),
@@ -203,7 +203,7 @@ describe("GET/api/articles/:article_id/comments", () => {
       .get("/api/articles/1/comments")
       .expect(200)
       .then((response) => {
-        expect(response.body).toBeSortedBy("created_at", {
+        expect(response.body.articles).toBeSortedBy("created_at", {
           descending: true,
         });
       });
@@ -213,7 +213,7 @@ describe("GET/api/articles/:article_id/comments", () => {
       .get("/api/articles/1/comments?sort_by=votes&&order=DESC")
       .expect(200)
       .then((response) => {
-        expect(response.body).toBeSortedBy("votes", {
+        expect(response.body.articles).toBeSortedBy("votes", {
             descending: true
         })
       })
@@ -223,9 +223,17 @@ describe("GET/api/articles/:article_id/comments", () => {
       .get("/api/articles/1/comments?sort_by=author&&order=ASC")
       .expect(200)
       .then((response) => {
-        expect(response.body).toBeSortedBy("author", {
+        expect(response.body.articles).toBeSortedBy("author", {
             descending: false
         })
       })
+  });
+  test('should return appropriate error when passed a valid but non existant article ID ', () => {
+    return request(app)
+    .get("/api/articles/999/comments")
+    .expect(404)
+    .then((response) => {
+        expect(response.body.msg).toBe("not found")
+    })
   });
 });
