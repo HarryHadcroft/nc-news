@@ -8,9 +8,10 @@ function getArticleById (req, res, next) {
 }
 
 function getArticles(req, res, next) {
-    selectArticles().then((articles) => {
+    const { topic, author } = req.query
+    selectArticles(topic, author).then((articles) => {
         res.status(200).send(articles)
-    })
+    }).catch(next)
 }
 
 module.exports = {getArticleById, getArticles}
