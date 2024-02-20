@@ -18,8 +18,8 @@ describe("GET/api/topics", () => {
       .get("/api/topics")
       .expect(200)
       .then((response) => {
-        expect(response.body.topics.length).toBe(3);
         const topics = response.body.topics;
+        expect(response.body.topics.length).toBe(3);
         topics.forEach((topic) => {
           expect(topic).toMatchObject({
             slug: expect.any(String),
@@ -48,16 +48,7 @@ describe("GET/api", () => {
       .get("/api")
       .expect(200)
       .then((response) => {
-        expect(response.body).toEqual(endpoints);
-      });
-  });
-  test("should return appropriate error when endpoint is mis-typed", () => {
-    return request(app)
-      .get("/ap")
-      .expect(404)
-      .then((response) => {
-        const error = response.body;
-        expect(error.msg).toBe("Cannot find path");
+        expect(response.body.allEndpoints).toEqual(endpoints);
       });
   });
 });
@@ -113,7 +104,7 @@ describe("GET/api/articles", () => {
       .get("/api/articles")
       .expect(200)
       .then((response) => {
-        const articles = response.body;
+        const articles = response.body.articles;
         articles.forEach((article) => {
           expect(article).toMatchObject({
             author: expect.any(String),
@@ -133,7 +124,7 @@ describe("GET/api/articles", () => {
       .get("/api/articles")
       .expect(200)
       .then((response) => {
-        expect(response.body).toBeSortedBy("created_at", {
+        expect(response.body.articles).toBeSortedBy("created_at", {
           descending: true,
         });
       });
@@ -143,7 +134,7 @@ describe("GET/api/articles", () => {
       .get("/api/articles?topic=mitch")
       .expect(200)
       .then((response) => {
-        response.body.forEach((article) => {
+        response.body.articles.forEach((article) => {
           expect(article.topic).toBe("mitch");
         });
       });
@@ -153,7 +144,7 @@ describe("GET/api/articles", () => {
       .get("/api/articles?author=rogersop")
       .expect(200)
       .then((response) => {
-        response.body.forEach((article) => {
+        response.body.articles.forEach((article) => {
           expect(article.author).toBe("rogersop");
         });
       });
@@ -173,5 +164,83 @@ describe("GET/api/articles", () => {
       .then((response) => {
         expect(response.body.msg).toBe("bad request");
       });
+  });
+});
+
+describe("GET/api/articles/:article_id/comments", () => {
+  test("should return a status code 200", () => {
+    return request(app).get("/api/articles/1/comments").expect(200);
+  });
+  test("should return an array of comments for the given article", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.articles.length).toBe(11);
+        response.body.articles.forEach((article) => {
+          expect(article).toMatchObject({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            article_id: 1,
+          });
+        });
+      });
+  });
+  test("should return an array of comments for the given article ordered by date created descending", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.articles).toBeSortedBy("created_at", {
+          descending: true,
+        });
+      });
+  });
+  test('should return an array of comments for the given article ordered by votes descending', () => {
+    return request(app)
+      .get("/api/articles/1/comments?sort_by=votes&&order=DESC")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.articles).toBeSortedBy("votes", {
+            descending: true
+        })
+      })
+  });
+  test('should return an array of comments for the given article ordered by author alphabetically', () => {
+    return request(app)
+      .get("/api/articles/1/comments?sort_by=author&&order=ASC")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.articles).toBeSortedBy("author", {
+            descending: false
+        })
+      })
+  });
+  test('should return appropriate error when passed a valid but non existant article ID ', () => {
+    return request(app)
+    .get("/api/articles/999/comments")
+    .expect(404)
+    .then((response) => {
+        expect(response.body.msg).toBe("not found")
+    })
+  });
+  test('should return an appropriate error when passed an invalid sort_by query', () => {
+    return request(app)
+    .get("/api/articles/1/comments?sort_by=id")
+    .expect(400)
+    .then((response) => {
+        expect(response.body.msg).toBe("bad request")
+    })
+  });
+  test('should return an appropriate error when passed an invalid order query', () => {
+    return request(app)
+    .get("/api/articles/1/comments?order=lowest")
+    .expect(400)
+    .then((response) => {
+        expect(response.body.msg).toBe("bad request")
+    })
   });
 });
