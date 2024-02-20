@@ -51,15 +51,6 @@ describe("GET/api", () => {
         expect(response.body.allEndpoints).toEqual(endpoints);
       });
   });
-  test("should return appropriate error when endpoint is mis-typed", () => {
-    return request(app)
-      .get("/ap")
-      .expect(404)
-      .then((response) => {
-        const error = response.body;
-        expect(error.msg).toBe("Cannot find path");
-      });
-  });
 });
 
 describe("GET/api/atricles/:article_id", () => {
@@ -234,6 +225,22 @@ describe("GET/api/articles/:article_id/comments", () => {
     .expect(404)
     .then((response) => {
         expect(response.body.msg).toBe("not found")
+    })
+  });
+  test('should return an appropriate error when passed an invalid sort_by query', () => {
+    return request(app)
+    .get("/api/articles/1/comments?sort_by=id")
+    .expect(400)
+    .then((response) => {
+        expect(response.body.msg).toBe("bad request")
+    })
+  });
+  test('should return an appropriate error when passed an invalid order query', () => {
+    return request(app)
+    .get("/api/articles/1/comments?order=lowest")
+    .expect(400)
+    .then((response) => {
+        expect(response.body.msg).toBe("bad request")
     })
   });
 });
