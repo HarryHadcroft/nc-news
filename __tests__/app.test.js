@@ -175,3 +175,37 @@ describe("GET/api/articles", () => {
       });
   });
 });
+
+describe("GET/api/articles/:article_id/comments", () => {
+  test("should return a status code 200", () => {
+    return request(app).get("/api/articles/1/comments").expect(200);
+  });
+  test("should return an array of comments for the given article", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.length).toBe(11);
+        response.body.forEach((article) => {
+          expect(article).toMatchObject({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            article_id: 1,
+          });
+        });
+      });
+  });
+  test("should return an array of comments for the given article ordered by date created descending", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toBeSortedBy("created_at", {
+          descending: true,
+        });
+      });
+  });
+});
