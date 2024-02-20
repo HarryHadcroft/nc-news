@@ -208,4 +208,24 @@ describe("GET/api/articles/:article_id/comments", () => {
         });
       });
   });
+  test('should return an array of comments for the given article ordered by votes descending', () => {
+    return request(app)
+      .get("/api/articles/1/comments?sort_by=votes&&order=DESC")
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toBeSortedBy("votes", {
+            descending: true
+        })
+      })
+  });
+  test('should return an array of comments for the given article ordered by author alphabetically', () => {
+    return request(app)
+      .get("/api/articles/1/comments?sort_by=author&&order=ASC")
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toBeSortedBy("author", {
+            descending: false
+        })
+      })
+  });
 });
