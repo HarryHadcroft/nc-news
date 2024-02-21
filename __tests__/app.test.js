@@ -86,7 +86,7 @@ describe("GET/api/atricles/:article_id", () => {
       .expect(404)
       .then((response) => {
         const error = response.body;
-        expect(error.msg).toBe("Article does not exist");
+        expect(error.msg).toBe("not found");
       });
   });
   test("should return appropriate error and message when passed an invalid article ID", () => {
@@ -223,6 +223,15 @@ describe("GET/api/articles/:article_id/comments", () => {
             descending: false
         })
       })
+  });
+  test('should return an empty array when given an article_id that exists but has no comments', () => {
+    return request(app)
+    .get("/api/articles/13/comments")
+    .expect(200)
+    .then((response) => {
+      const { comments } = response.body
+      expect(comments.length).toBe(0)
+    })
   });
   test('should return appropriate error when passed a valid but non existant article ID ', () => {
     return request(app)

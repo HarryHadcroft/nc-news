@@ -1,11 +1,18 @@
 const {insertCommentByArticleId, selectCommentsByArticleId} = require("../models/comments.model")
+const { selectArticleById } = require("../models/articles.model")
 
 function getCommentsByArticleId(req, res, next) {
     const { article_id } = req.params
     const { sort_by, order } = req.query
-    selectCommentsByArticleId(article_id, sort_by, order).then((articles) => {
-        res.status(200).send({articles})
+    const promises = [selectCommentsByArticleId(article_id, sort_by, order), selectArticleById(article_id)]
+
+    Promise.all(promises).then((promiseResolutions) => {
+        if(promiseResolutions[0].length === 0){
+            res.status(200).send({comments: promiseResolutions[0]})
+        }
+        res.status(200).send({ articles: promiseResolutions[0]})
     }).catch(next)
+
 }
 
 function postCommentByArticleId(req, res, next) {
