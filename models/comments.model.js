@@ -20,6 +20,9 @@ function selectCommentsByArticleId(article_id, sort_by = "created_at", order = "
 }
 
 function insertCommentByArticleId(article_id, body) {
+    if(Object.keys(body).length > 2){
+        return Promise.reject({status: 400, msg: "bad request"})
+    }
    return db.query(`INSERT INTO comments (article_id, author, body)
    VALUES ($1, $2, $3)
    RETURNING *`, [article_id, body.username, body.body])

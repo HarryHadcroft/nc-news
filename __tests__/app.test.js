@@ -275,13 +275,57 @@ describe('POST/api/articles/:article_id/comments', () => {
             })
         })
     });
-    test('STATUS - 400: Should return an appropriate error when passed an invalid body', () => {
+    test('STATUS - 400: Should return an appropriate error when passed an empty body', () => {
       return request(app)
       .post("/api/articles/2/comments")
       .send({})
       .expect(400)
       .then((response) => {
         expect(response.body.msg).toBe("bad request")
+      })
+    });
+    test('STATUS - 400: should return appropriate error when passed invalid key in body', () => {
+      return request(app)
+      .post("/api/articles/2/comments")
+      .send({username: "rogersop", comment: "Very interesting"})
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("bad request")
+      })
+    });
+    test('STATUS - 400: should return appropriate error when passed a body with too many keys', () => {
+      return request(app)
+      .post("/api/articles/2/comments")
+      .send({username: "rogersop", comment: "Very interesting", age: 40})
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("bad request")
+      })
+    });
+    test('STATUS - 400: should return appropriate error when not passed a body', () => {
+      return request(app)
+      .post("/api/articles/2/comments")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("bad request")
+      })
+    });
+    test('STATUS - 404: should return appropriate error when passed an invalid article ID ', () => {
+      return request(app)
+      .post("/api/articles/999/comments")
+      .send({username: "rogersop", body: "Very interesting"})
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("not found")
+      })
+    });
+    test('STATUS - 404: should return appropriate error when passed a user not present in the database', () => {
+      return request(app)
+      .post("/api/articles/2/comments")
+      .send({username: "baz", body: "Very interesting"})
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("not found")
       })
     });
 });
