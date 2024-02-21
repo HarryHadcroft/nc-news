@@ -229,8 +229,7 @@ describe("GET/api/articles/:article_id/comments", () => {
     .get("/api/articles/13/comments")
     .expect(200)
     .then((response) => {
-      const { comments } = response.body
-      expect(comments.length).toBe(0)
+      expect(response.body.comments.length).toBe(0)
     })
   });
   test('should return appropriate error when passed a valid but non existant article ID ', () => {
