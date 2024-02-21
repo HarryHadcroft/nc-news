@@ -257,7 +257,6 @@ describe('POST/api/articles/:article_id/comments', () => {
         .send({username: "rogersop", body: "Very interesting"})
         .expect(201)
         .then((response) =>{
-          console.log(response.body.newComment)
             expect(response.body.newComment).toMatchObject({
                 comment_id: expect.any(Number),
                 body: "Very interesting",
