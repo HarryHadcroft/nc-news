@@ -7,10 +7,7 @@ function getCommentsByArticleId(req, res, next) {
     const promises = [selectCommentsByArticleId(article_id, sort_by, order), selectArticleById(article_id)]
 
     Promise.all(promises).then((promiseResolutions) => {
-        if(promiseResolutions[0].length === 0){
-            res.status(200).send({comments: promiseResolutions[0]})
-        }
-        res.status(200).send({ articles: promiseResolutions[0]})
+        res.status(200).send({ comments: promiseResolutions[0]})
     }).catch(next)
 
 }
