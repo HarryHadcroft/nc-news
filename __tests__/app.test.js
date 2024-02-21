@@ -86,7 +86,7 @@ describe("GET/api/atricles/:article_id", () => {
       .expect(404)
       .then((response) => {
         const error = response.body;
-        expect(error.msg).toBe("Article does not exist");
+        expect(error.msg).toBe("not found");
       });
   });
   test("should return appropriate error and message when passed an invalid article ID", () => {
@@ -181,9 +181,9 @@ describe("GET/api/articles/:article_id/comments", () => {
       .get("/api/articles/1/comments")
       .expect(200)
       .then((response) => {
-        expect(response.body.articles.length).toBe(11);
-        response.body.articles.forEach((article) => {
-          expect(article).toMatchObject({
+        expect(response.body.comments.length).toBe(11);
+        response.body.comments.forEach((comment) => {
+          expect(comment).toMatchObject({
             comment_id: expect.any(Number),
             votes: expect.any(Number),
             created_at: expect.any(String),
@@ -199,7 +199,7 @@ describe("GET/api/articles/:article_id/comments", () => {
       .get("/api/articles/1/comments")
       .expect(200)
       .then((response) => {
-        expect(response.body.articles).toBeSortedBy("created_at", {
+        expect(response.body.comments).toBeSortedBy("created_at", {
           descending: true,
         });
       });
@@ -209,7 +209,7 @@ describe("GET/api/articles/:article_id/comments", () => {
       .get("/api/articles/1/comments?sort_by=votes&&order=DESC")
       .expect(200)
       .then((response) => {
-        expect(response.body.articles).toBeSortedBy("votes", {
+        expect(response.body.comments).toBeSortedBy("votes", {
             descending: true
         })
       })
@@ -219,10 +219,18 @@ describe("GET/api/articles/:article_id/comments", () => {
       .get("/api/articles/1/comments?sort_by=author&&order=ASC")
       .expect(200)
       .then((response) => {
-        expect(response.body.articles).toBeSortedBy("author", {
+        expect(response.body.comments).toBeSortedBy("author", {
             descending: false
         })
       })
+  });
+  test('should return an empty array when given an article_id that exists but has no comments', () => {
+    return request(app)
+    .get("/api/articles/13/comments")
+    .expect(200)
+    .then((response) => {
+      expect(response.body.comments.length).toBe(0)
+    })
   });
   test('should return appropriate error when passed a valid but non existant article ID ', () => {
     return request(app)
