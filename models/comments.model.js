@@ -22,4 +22,13 @@ function selectCommentsByArticleId(article_id, sort_by = "created_at", order = "
     })
 }
 
-module.exports = selectCommentsByArticleId
+function insertCommentByArticleId(article_id, body) {
+   return db.query(`INSERT INTO comments (article_id, author, body)
+   VALUES ($1, $2, $3)
+   RETURNING *`, [article_id, body.username, body.body])
+   .then((result) => {
+    return result.rows[0]
+   })
+}
+
+module.exports = {insertCommentByArticleId, selectCommentsByArticleId}

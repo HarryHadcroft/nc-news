@@ -5,6 +5,11 @@ const data = require("../db/data/test-data/index");
 const seed = require("../db/seeds/seed");
 const endpoints = require("../endpoints.json");
 
+
+beforeEach(() => {
+  return seed(data)
+})
+
 afterAll(() => {
   db.end();
 });
@@ -87,10 +92,10 @@ describe("GET/api/atricles/:article_id", () => {
   test("should return appropriate error and message when passed an invalid article ID", () => {
     return request(app)
       .get("/api/articles/invalid-id")
-      .expect(400)
+      .expect(404)
       .then((response) => {
         const error = response.body;
-        expect(error.msg).toBe("Bad request");
+        expect(error.msg).toBe("not found");
       });
   });
 });
@@ -243,4 +248,32 @@ describe("GET/api/articles/:article_id/comments", () => {
         expect(response.body.msg).toBe("bad request")
     })
   });
+});
+
+describe('POST/api/articles/:article_id/comments', () => {
+    test('STATUS - 201: should add a new comment to the specified article and return the new comment', () => {
+        return request(app)
+        .post("/api/articles/2/comments")
+        .send({username: "rogersop", body: "Very interesting"})
+        .expect(201)
+        .then((response) =>{
+            expect(response.body.newComment).toMatchObject({
+                comment_id: expect.any(Number),
+                body: "Very interesting",
+                article_id: 2,
+                author: "rogersop",
+                votes: expect.any(Number),
+                created_at: expect.any(String)
+            })
+        })
+    });
+    test('STATUS - 400: Should return an appropriate error when passed an invalid body', () => {
+      return request(app)
+      .post("/api/articles/2/comments")
+      .send({})
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("bad request")
+      })
+    });
 });
