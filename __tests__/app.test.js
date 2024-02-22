@@ -413,3 +413,30 @@ describe('DELETE/api/comments/:comment_id', () => {
     })
   });
 });
+
+describe('GET/api/users', () => {
+  test('STATUS - 200: should return an array of user objects', () => {
+    return request(app)
+    .get("/api/users")
+    .expect(200)
+    .then((response) => {
+      console.log(response.body.users)
+      expect(response.body.users.length).toBe(4)
+      response.body.users.forEach((user) => {
+        expect(user).toMatchObject({
+          username: expect.any(String),
+          name: expect.any(String),
+          avatar_url: expect.any(String)
+        })
+      })
+    })
+  });
+  test('STATUS - 404: should return appropriate error when passed invalid endpoint', () => {
+    return request(app)
+    .get("/api/uzers")
+    .expect(404)
+    .then((response) => {
+      expect(response.body.msg).toBe("Cannot find path")
+    })
+  });
+});

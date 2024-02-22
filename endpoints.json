@@ -44,14 +44,14 @@
   "GET /api/articles/article_id/comments": {
     "description": "serves an array of comments for the specific article requested",
     "Queries": ["sort_by", "order"],
-    "exampleResponse": {
+    "exampleResponse": [{
       "comment_id": 18,
       "body": "This morning, I showered for nine minutes.",
       "article_id": 1,
       "author": "butter_bridge",
       "votes": 16,
       "created_at": "2020-07-21T00:20:00.000Z"
-    }
+    }]
   },
   "POST /api/articles/articles_id/comments": {
     "description": "Adds a new comment to the specified article and serves an object of the newly added comment",
@@ -85,6 +85,15 @@
     "description": "Deletes the specified comment and serves no content",
     "Queries": [],
     "exampleResponse": {}
+  },
+  "GET /api/users": {
+    "description": "Serves an array of all users",
+    "Queries": [],
+    "exampleResponse": [{
+      "username": "lurker",
+      "name": "do_nothing",
+      "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
+    }]
   }
 }
 
