@@ -135,7 +135,7 @@ describe("GET/api/articles", () => {
         });
       });
   });
-  test.only("should return an array of articles matching the specified topic", () => {
+  test("should return an array of articles matching the specified topic", () => {
     return request(app)
       .get("/api/articles?topic=mitch")
       .expect(200)
