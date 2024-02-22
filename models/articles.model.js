@@ -12,7 +12,6 @@ function selectArticleById(articleId) {
 function selectArticles(query, sort_by = "created_at", order = "DESC") {
     const queryVals = []
     const queryKey = Object.keys(query)
-    console.log(query)
 
     if(queryKey.length !== 0 && !queryKey.includes("topic") || query.topic === ""){
         return Promise.reject({status: 400, msg: "bad request"})
@@ -30,7 +29,6 @@ function selectArticles(query, sort_by = "created_at", order = "DESC") {
     sqlString += ` GROUP BY articles.article_id ORDER BY ${sort_by} ${order}`
 
     return db.query(sqlString, queryVals).then((result) => {
-        console.log(result.rows)
         if(result.rows.length === 0){
             return Promise.reject({status: 400, msg: "bad request"})
         }
