@@ -4,6 +4,7 @@ const db = require("../db/connection");
 const data = require("../db/data/test-data/index");
 const seed = require("../db/seeds/seed");
 const endpoints = require("../endpoints.json");
+const { updatedArticlebyId } = require("../models/articles.model");
 
 
 beforeEach(() => {
@@ -310,7 +311,7 @@ describe('POST/api/articles/:article_id/comments', () => {
         expect(response.body.msg).toBe("bad request")
       })
     });
-    test('STATUS - 404: should return appropriate error when passed an invalid article ID ', () => {
+    test('STATUS - 404: should return appropriate error when passed a valid but non-existant article ID ', () => {
       return request(app)
       .post("/api/articles/999/comments")
       .send({username: "rogersop", body: "Very interesting"})
@@ -328,4 +329,60 @@ describe('POST/api/articles/:article_id/comments', () => {
         expect(response.body.msg).toBe("not found")
       })
     });
+});
+
+describe('PATCH/api/articles/:article_id', () => {
+  test('STATUS - 200: should update specified article with data passed in and return the updated article', () => {
+    return request(app)
+    .patch("/api/articles/3")
+    .send({inc_votes: 10})
+    .expect(200)
+    .then((response) => {
+      expect(response.body.updatedArticle).toMatchObject({
+        author: expect.any(String),
+        title: expect.any(String),
+        article_id: 3,
+        body: expect.any(String),
+        topic: expect.any(String),
+        created_at: expect.any(String),
+        votes: 10,
+        article_img_url: expect.any(String)
+      })
+    })
+  });
+  test('STATUS - 404: should return an appropriate error when passed a valid but non-existant article ID', () => {
+    return request(app)
+    .patch("/api/articles/999")
+    .send({inc_votes: 10})
+    .expect(404)
+    .then((response) => {
+      expect(response.body.msg).toBe("not found")
+    })
+  });
+  test('STATUS - 400: should return appropriate error when not passed a body', () => {
+    return request(app)
+    .patch("/api/articles/3")
+    .expect(400)
+    .then((response) => {
+      expect(response.body.msg).toBe("bad request")
+    })
+  });
+  test('STATUS - 400: should return appropriate error when passed an invalid body format', () => {
+    return request(app)
+    .patch("/api/articles/3")
+    .send({inc_votes: 10, username: "rogersop"})
+    .expect(400)
+    .then((response) => {
+      expect(response.body.msg).toBe("bad request")
+    })
+  });
+  test('STATUS - 400: should return appropriate error when passed an empty body ', () => {
+    return request(app)
+    .patch("/api/articles/3")
+    .send({})
+    .expect(400)
+    .then((response) => {
+      expect(response.body.msg).toBe("bad request")
+    })
+  });
 });

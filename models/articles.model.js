@@ -37,4 +37,20 @@ function selectArticles(topic, author, sort_by = "created_at", order = "DESC") {
     })
 }
 
-module.exports = {selectArticleById, selectArticles}
+function updatedArticlebyId(article_id, body) {
+    const bodyKeys = Object.keys(body);
+    if (bodyKeys.length !== 1 || !bodyKeys.includes('inc_votes')) {
+        return Promise.reject({ status: 400, msg: "bad request" });
+    }
+    return db.query(`UPDATE articles 
+    SET votes = votes + $2
+    WHERE article_id = $1
+    RETURNING *`, [article_id, body.inc_votes])
+    .then((result) => {
+        if(result.rows.length === 0){
+            return Promise.reject({status: 404, msg: "not found"})
+        }
+        return result.rows[0]
+    })
+}
+module.exports = {updatedArticlebyId, selectArticleById, selectArticles}
