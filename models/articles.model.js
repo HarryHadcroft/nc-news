@@ -9,16 +9,26 @@ function selectArticleById(articleId) {
    })
 }
 
-function selectArticles(sort_by = "created_at", order = "DESC") {
-    const validsortBy = ["created_at"]
+function selectArticles(query, sort_by = "created_at", order = "DESC") {
+    const queryVals = []
+    const queryKey = Object.keys(query)
+
+    if(queryKey.length !== 0 && !queryKey.includes("topic") || query.topic === ""){
+        return Promise.reject({status: 400, msg: "bad request"})
+    }
 
     let sqlString = `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.comment_id) AS comment_count
     FROM articles
     LEFT JOIN comments ON articles.article_id = comments.article_id`
+
+    if(query.topic){
+        sqlString += ` WHERE articles.topic=$1`
+        queryVals.push(query.topic)
+    }
     
     sqlString += ` GROUP BY articles.article_id ORDER BY ${sort_by} ${order}`
 
-    return db.query(sqlString).then((result) => {
+    return db.query(sqlString, queryVals).then((result) => {
         if(result.rows.length === 0){
             return Promise.reject({status: 400, msg: "bad request"})
         }
