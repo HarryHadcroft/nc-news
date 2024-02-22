@@ -8,8 +8,8 @@ function getArticleById (req, res, next) {
 }
 
 function getArticles(req, res, next) {
-    const { topic, author } = req.query
-    selectArticles(topic, author).then((articles) => {
+    const query = req.query
+    selectArticles(query).then((articles) => {
         res.status(200).send({ articles })
     }).catch(next)
 }
