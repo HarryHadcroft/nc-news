@@ -386,3 +386,30 @@ describe('PATCH/api/articles/:article_id', () => {
     })
   });
 });
+
+describe('DELETE/api/comments/:comment_id', () => {
+  test('STATUS - 204: should return status code 204 and no content', () => {
+    return request(app)
+    .delete("/api/comments/4")
+    .expect(204)
+    .then((response) => {
+      expect(response.body).toEqual({})
+    })
+  });
+  test('STATUS - 404: should return an appropriate error when passed a valid but non-existant comment ID', () => {
+    return request(app)
+    .delete("/api/comments/999")
+    .expect(404)
+    .then((response) => {
+      expect(response.body.msg).toBe("not found")
+    })
+  });
+  test('STATUS - 404: should return appropriate error when passed an invalid comment ID', () => {
+    return request(app)
+    .delete("/api/comments/invalid-id")
+    .expect(404)
+    .then((response) => {
+      expect(response.body.msg).toBe("not found")
+    })
+  });
+});
