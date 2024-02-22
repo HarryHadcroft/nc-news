@@ -430,4 +430,12 @@ describe('GET/api/users', () => {
       })
     })
   });
+  test('STATUS - 404: should return appropriate error when passed invalid endpoint', () => {
+    return request(app)
+    .get("/api/uzers")
+    .expect(404)
+    .then((response) => {
+      expect(response.body.msg).toBe("Cannot find path")
+    })
+  });
 });
