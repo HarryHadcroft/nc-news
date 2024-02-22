@@ -4,6 +4,7 @@ const db = require("../db/connection");
 const data = require("../db/data/test-data/index");
 const seed = require("../db/seeds/seed");
 const endpoints = require("../endpoints.json");
+const { updatedArticlebyId } = require("../models/articles.model");
 
 
 beforeEach(() => {
