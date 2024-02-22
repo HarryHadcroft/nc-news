@@ -135,6 +135,18 @@ describe("GET/api/articles", () => {
         });
       });
   });
+  test.only("should return an array of articles matching the specified topic", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.articles.length).toBe(12)
+        response.body.articles.forEach((article) => {
+          expect(article.topic).toBe("mitch");
+        });
+      });
+  });
+  });
 
 describe("GET/api/articles/:article_id/comments", () => {
   test("should return a status code 200", () => {
@@ -403,4 +415,3 @@ describe('GET/api/users', () => {
     })
   });
 });
-})
