@@ -93,10 +93,10 @@ describe("GET/api/atricles/:article_id", () => {
   test("should return appropriate error and message when passed an invalid article ID", () => {
     return request(app)
       .get("/api/articles/invalid-id")
-      .expect(404)
+      .expect(400)
       .then((response) => {
         const error = response.body;
-        expect(error.msg).toBe("not found");
+        expect(error.msg).toBe("bad request");
       });
   });
 });
@@ -380,6 +380,33 @@ describe('PATCH/api/articles/:article_id', () => {
     return request(app)
     .patch("/api/articles/3")
     .send({})
+    .expect(400)
+    .then((response) => {
+      expect(response.body.msg).toBe("bad request")
+    })
+  });
+});
+
+describe('DELETE/api/comments/:comment_id', () => {
+  test('STATUS - 204: should return status code 204 and no content', () => {
+    return request(app)
+    .delete("/api/comments/4")
+    .expect(204)
+    .then((response) => {
+      expect(response.body).toEqual({})
+    })
+  });
+  test('STATUS - 404: should return an appropriate error when passed a valid but non-existant comment ID', () => {
+    return request(app)
+    .delete("/api/comments/999")
+    .expect(404)
+    .then((response) => {
+      expect(response.body.msg).toBe("not found")
+    })
+  });
+  test('STATUS - 400: should return appropriate error when passed an invalid comment ID', () => {
+    return request(app)
+    .delete("/api/comments/invalid-id")
     .expect(400)
     .then((response) => {
       expect(response.body.msg).toBe("bad request")
