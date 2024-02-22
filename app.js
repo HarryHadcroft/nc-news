@@ -5,6 +5,7 @@ const getEndpoints = require("./controllers/api.controller")
 const {patchArticleById, getArticleById, getArticles} = require("./controllers/articles.controller")
 const {handleInvalidEnpoint, handlePSQLErrors, handleCustomerErrors} = require("./controllers/errors.controller")
 const {deleteCommentById, postCommentByArticleId, getCommentsByArticleId} = require("./controllers/comments.controller")
+const getUsers = require("./controllers/users.controller")
 
 app.use(express.json())
 
@@ -13,6 +14,8 @@ app.get("/api", getEndpoints)
 app.get("/api/topics", getTopics)
 
 app.get("/api/articles", getArticles)
+
+app.get("/api/users", getUsers)
 
 app.get("/api/articles/:article_id", getArticleById)
 
