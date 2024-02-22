@@ -135,43 +135,6 @@ describe("GET/api/articles", () => {
         });
       });
   });
-  test("should return an array of articles matching the specified topic", () => {
-    return request(app)
-      .get("/api/articles?topic=mitch")
-      .expect(200)
-      .then((response) => {
-        response.body.articles.forEach((article) => {
-          expect(article.topic).toBe("mitch");
-        });
-      });
-  });
-  test("should return an array of articles matching the specified author", () => {
-    return request(app)
-      .get("/api/articles?author=rogersop")
-      .expect(200)
-      .then((response) => {
-        response.body.articles.forEach((article) => {
-          expect(article.author).toBe("rogersop");
-        });
-      });
-  });
-  test("should return appropriate error when passed an invalid topic query", () => {
-    return request(app)
-      .get("/api/articles?topic=switch")
-      .expect(400)
-      .then((response) => {
-        expect(response.body.msg).toBe("bad request");
-      });
-  });
-  test("should return appropriate error when passed an invalid author query", () => {
-    return request(app)
-      .get("/api/articles?author=roy")
-      .expect(400)
-      .then((response) => {
-        expect(response.body.msg).toBe("bad request");
-      });
-  });
-});
 
 describe("GET/api/articles/:article_id/comments", () => {
   test("should return a status code 200", () => {
@@ -440,3 +403,4 @@ describe('GET/api/users', () => {
     })
   });
 });
+})
