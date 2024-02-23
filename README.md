@@ -15,7 +15,7 @@ In each of these files, you will need to add the following code: `PGDATABASE=<da
 
 Next, you will need to run `npm install` to install all of the required dependencies
 
-Finally, you will need to create the databases using `npm run seetup-dbs` and seed them with the data using `npm run seed`
+Finally, you will need to create the databases using `npm run setup-dbs` and seed them with the data using `npm run seed`
 
 ### Testing
 You can run all tests with `npm test` or use `npm run app-test` for app specific testing
