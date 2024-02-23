@@ -2,7 +2,9 @@ const db = require("../db/connection")
 const {selectTopics, selectTopicByName} = require("./topics.model")
 
 function selectArticleById(articleId) {
-   return db.query(`SELECT * FROM articles WHERE article_id = $1`, [articleId]).then((result) => {
+   return db.query(`SELECT articles.article_id, articles.title, articles.body, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.comment_id) AS comment_count
+   FROM articles
+   LEFT JOIN comments ON articles.article_id = comments.article_id WHERE articles.article_id=$1 GROUP BY articles.article_id`, [articleId]).then((result) => {
     if(result.rows.length === 0){
         return Promise.reject({status: 404, msg: "not found"})
     }
@@ -28,8 +30,6 @@ async function selectArticles(query, sort_by = "created_at", order = "DESC") {
 
     if(query.topic){
         if(!validQueryVals.includes(query.topic)){
-            console.log("here")
-            console.log(query.topic)
             return Promise.reject({status: 400, msg: "bad request"})
         }
         sqlString += ` WHERE articles.topic=$1`
