@@ -1,1 +1,3 @@
-You will need to create two .env files for this code. An .env.test and .env.development. Both will need to have PGDATABASE=, with the correct database name assigned. Database names can be found in the setup.sql
+The intention of this project is to mimic the building of a real world backend service (such as Reddit) which should provide information to the front end architecture.
+
+Here is a link to the hosted version: https://nc-news-yxr5.onrender.com
