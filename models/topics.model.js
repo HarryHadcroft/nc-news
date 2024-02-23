@@ -6,4 +6,11 @@ function selectTopics() {
     })
 }
 
-module.exports = selectTopics
+function selectTopicByName(topicName) {
+    return db.query(`SELECT * FROM topics
+    WHERE slug = $1`, [topicName]).then((result) => {
+        return result.rows
+    })
+}
+
+module.exports = {selectTopicByName, selectTopics}

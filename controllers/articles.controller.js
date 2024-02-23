@@ -1,4 +1,5 @@
 const {updatedArticlebyId, selectArticleById, selectArticles} = require("../models/articles.model")
+const {selectTopicByName, selectTopics} = require("../models/topics.model")
 
 function getArticleById (req, res, next) {
     const { article_id } = req.params
@@ -9,8 +10,14 @@ function getArticleById (req, res, next) {
 
 function getArticles(req, res, next) {
     const query = req.query
-    selectArticles(query).then((articles) => {
-        res.status(200).send({ articles })
+    const promises = [selectArticles(query)]
+
+    if(query.topic){
+        promises.push(selectTopicByName(query.topic))
+    }
+
+    Promise.all(promises).then((promiseResolutions) => {
+        res.status(200).send({ articles: promiseResolutions[0] })
     }).catch(next)
 }
 

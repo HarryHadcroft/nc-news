@@ -1,4 +1,5 @@
 const db = require("../db/connection")
+const {selectTopics, selectTopicByName} = require("./topics.model")
 
 function selectArticleById(articleId) {
    return db.query(`SELECT * FROM articles WHERE article_id = $1`, [articleId]).then((result) => {
@@ -9,9 +10,13 @@ function selectArticleById(articleId) {
    })
 }
 
-function selectArticles(query, sort_by = "created_at", order = "DESC") {
+async function selectArticles(query, sort_by = "created_at", order = "DESC") {
     const queryVals = []
     const queryKey = Object.keys(query)
+    let alltopics = await selectTopics()
+    const validQueryVals = alltopics.map((topic) => {
+        return topic.slug
+    })
 
     if(queryKey.length !== 0 && !queryKey.includes("topic") || query.topic === ""){
         return Promise.reject({status: 400, msg: "bad request"})
@@ -22,6 +27,11 @@ function selectArticles(query, sort_by = "created_at", order = "DESC") {
     LEFT JOIN comments ON articles.article_id = comments.article_id`
 
     if(query.topic){
+        if(!validQueryVals.includes(query.topic)){
+            console.log("here")
+            console.log(query.topic)
+            return Promise.reject({status: 400, msg: "bad request"})
+        }
         sqlString += ` WHERE articles.topic=$1`
         queryVals.push(query.topic)
     }
@@ -29,9 +39,6 @@ function selectArticles(query, sort_by = "created_at", order = "DESC") {
     sqlString += ` GROUP BY articles.article_id ORDER BY ${sort_by} ${order}`
 
     return db.query(sqlString, queryVals).then((result) => {
-        if(result.rows.length === 0){
-            return Promise.reject({status: 400, msg: "bad request"})
-        }
         return result.rows
     })
 }
