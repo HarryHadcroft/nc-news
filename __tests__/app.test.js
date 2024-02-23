@@ -4,7 +4,6 @@ const db = require("../db/connection");
 const data = require("../db/data/test-data/index");
 const seed = require("../db/seeds/seed");
 const endpoints = require("../endpoints.json");
-const { updatedArticlebyId } = require("../models/articles.model");
 
 beforeEach(() => {
   return seed(data);
@@ -80,6 +79,14 @@ describe("GET/api/atricles/:article_id", () => {
         });
       });
   });
+  test("STATUS - 200: should return an article object with a comment_count property, corresponding with passed article ID", () => {
+    return request(app)
+      .get("/api/articles/3")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.article).toHaveProperty("comment_count");
+      });
+  });
   test("should return appropriate error and message when passed a valid but non-existant article ID", () => {
     return request(app)
       .get("/api/articles/999")
@@ -145,13 +152,13 @@ describe("GET/api/articles", () => {
         });
       });
   });
-  test('STATUS - 200: should return an empty array when passed a valid query that has no articles associated with it', () => {
+  test("STATUS - 200: should return an empty array when passed a valid query that has no articles associated with it", () => {
     return request(app)
-    .get("/api/articles?topic=paper")
-    .expect(200)
-    .then((response) => {
-      expect(response.body.articles.length).toBe(0)
-    })
+      .get("/api/articles?topic=paper")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.articles.length).toBe(0);
+      });
   });
   test("STATUS - 400: should return appropriate error when passed an invalid topic query", () => {
     return request(app)
