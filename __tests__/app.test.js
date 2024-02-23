@@ -145,6 +145,14 @@ describe("GET/api/articles", () => {
         });
       });
   });
+  test('STATUS - 200: should return an empty array when passed a valid query that has no articles associated with it', () => {
+    return request(app)
+    .get("/api/articles?topic=paper")
+    .expect(200)
+    .then((response) => {
+      expect(response.body.articles.length).toBe(0)
+    })
+  });
   test("STATUS - 400: should return appropriate error when passed an invalid topic query", () => {
     return request(app)
       .get("/api/articles?topic=switch")

@@ -1,4 +1,4 @@
-const selectTopics = require("../models/topics.model")
+const {selectTopicByName, selectTopics} = require("../models/topics.model")
 
 function getTopics(req, res, next) {
     selectTopics().then((topics) => {
