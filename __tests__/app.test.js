@@ -14,10 +14,7 @@ afterAll(() => {
 });
 
 describe("GET/api/topics", () => {
-  test("should return a status code 200", () => {
-    return request(app).get("/api/topics").expect(200);
-  });
-  test("should return an array of topic objects", () => {
+  test("STATUS - 200: should return an array of topic objects", () => {
     return request(app)
       .get("/api/topics")
       .expect(200)
@@ -44,10 +41,7 @@ describe("GET/api/topics", () => {
 });
 
 describe("GET/api", () => {
-  test("Should return a 200 status code", () => {
-    return request(app).get("/api").expect(200);
-  });
-  test("Should return an object describing all available endpoints", () => {
+  test("STATUS - 200: Should return an object describing all available endpoints", () => {
     return request(app)
       .get("/api")
       .expect(200)
@@ -58,10 +52,7 @@ describe("GET/api", () => {
 });
 
 describe("GET/api/atricles/:article_id", () => {
-  test("should return a 200 status code", () => {
-    return request(app).get("/api/articles/3").expect(200);
-  });
-  test("should return an article object corresponding to id input", () => {
+  test("STATUS - 200: should return an article object corresponding to id input", () => {
     return request(app)
       .get("/api/articles/3")
       .expect(200)
@@ -87,7 +78,7 @@ describe("GET/api/atricles/:article_id", () => {
         expect(response.body.article).toHaveProperty("comment_count");
       });
   });
-  test("should return appropriate error and message when passed a valid but non-existant article ID", () => {
+  test("STATUS - 404: should return appropriate error and message when passed a valid but non-existant article ID", () => {
     return request(app)
       .get("/api/articles/999")
       .expect(404)
@@ -96,7 +87,7 @@ describe("GET/api/atricles/:article_id", () => {
         expect(error.msg).toBe("not found");
       });
   });
-  test("should return appropriate error and message when passed an invalid article ID", () => {
+  test("STATUS - 400: should return appropriate error and message when passed an invalid article ID", () => {
     return request(app)
       .get("/api/articles/invalid-id")
       .expect(400)
@@ -108,10 +99,7 @@ describe("GET/api/atricles/:article_id", () => {
 });
 
 describe("GET/api/articles", () => {
-  test("should return a 200 status code", () => {
-    return request(app).get("/api/articles").expect(200);
-  });
-  test("should return an array of article objects", () => {
+  test("STATUS - 200: should return an array of article objects", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)
@@ -131,7 +119,7 @@ describe("GET/api/articles", () => {
         });
       });
   });
-  test("should return an array of articles sorted by date in descending order", () => {
+  test("STATUS - 200: should return an array of articles sorted by date in descending order", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)
@@ -141,7 +129,7 @@ describe("GET/api/articles", () => {
         });
       });
   });
-  test("should return an array of articles matching the specified topic", () => {
+  test("STATUS - 200: should return an array of articles matching the specified topic", () => {
     return request(app)
       .get("/api/articles?topic=mitch")
       .expect(200)
@@ -186,10 +174,7 @@ describe("GET/api/articles", () => {
   });
 
   describe("GET/api/articles/:article_id/comments", () => {
-    test("should return a status code 200", () => {
-      return request(app).get("/api/articles/1/comments").expect(200);
-    });
-    test("should return an array of comments for the given article", () => {
+    test("STATUS - 200: should return an array of comments for the given article", () => {
       return request(app)
         .get("/api/articles/1/comments")
         .expect(200)
@@ -207,7 +192,7 @@ describe("GET/api/articles", () => {
           });
         });
     });
-    test("should return an array of comments for the given article ordered by date created descending", () => {
+    test("STATUS - 200: should return an array of comments for the given article ordered by date created descending", () => {
       return request(app)
         .get("/api/articles/1/comments")
         .expect(200)
@@ -217,7 +202,7 @@ describe("GET/api/articles", () => {
           });
         });
     });
-    test("should return an array of comments for the given article ordered by votes descending", () => {
+    test("STATUS - 200: should return an array of comments for the given article ordered by votes descending", () => {
       return request(app)
         .get("/api/articles/1/comments?sort_by=votes&&order=DESC")
         .expect(200)
@@ -227,7 +212,7 @@ describe("GET/api/articles", () => {
           });
         });
     });
-    test("should return an array of comments for the given article ordered by author alphabetically", () => {
+    test("STATUS - 200: should return an array of comments for the given article ordered by author alphabetically", () => {
       return request(app)
         .get("/api/articles/1/comments?sort_by=author&&order=ASC")
         .expect(200)
@@ -237,7 +222,7 @@ describe("GET/api/articles", () => {
           });
         });
     });
-    test("should return an empty array when given an article_id that exists but has no comments", () => {
+    test("STATUS - 200: should return an empty array when given an article_id that exists but has no comments", () => {
       return request(app)
         .get("/api/articles/13/comments")
         .expect(200)
@@ -245,7 +230,7 @@ describe("GET/api/articles", () => {
           expect(response.body.comments.length).toBe(0);
         });
     });
-    test("should return appropriate error when passed a valid but non existant article ID ", () => {
+    test("STATUS - 404: should return appropriate error when passed a valid but non existant article ID ", () => {
       return request(app)
         .get("/api/articles/999/comments")
         .expect(404)
@@ -253,7 +238,7 @@ describe("GET/api/articles", () => {
           expect(response.body.msg).toBe("not found");
         });
     });
-    test("should return an appropriate error when passed an invalid sort_by query", () => {
+    test("STATUS - 400: should return an appropriate error when passed an invalid sort_by query", () => {
       return request(app)
         .get("/api/articles/1/comments?sort_by=id")
         .expect(400)
@@ -261,7 +246,7 @@ describe("GET/api/articles", () => {
           expect(response.body.msg).toBe("bad request");
         });
     });
-    test("should return an appropriate error when passed an invalid order query", () => {
+    test("STATUS - 400: should return an appropriate error when passed an invalid order query", () => {
       return request(app)
         .get("/api/articles/1/comments?order=lowest")
         .expect(400)
