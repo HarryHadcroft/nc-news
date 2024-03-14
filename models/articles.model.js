@@ -21,6 +21,13 @@ async function selectArticles(query, sort_by = "created_at", order = "DESC") {
         return topic.slug
     })
 
+    if(queryKey.includes("sort_by")){
+        sort_by = query.sort_by
+    }
+    if(queryKey.includes("order")){
+        order = query.order
+    }
+
     if (
         queryKey.length !== 0 &&
         !excludedKeys.some((key) => queryKey.includes(key)) ||
