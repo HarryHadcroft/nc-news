@@ -16,13 +16,18 @@ async function selectArticles(query, sort_by = "created_at", order = "DESC") {
     const queryVals = []
     const queryKey = Object.keys(query)
     let alltopics = await selectTopics()
+    const excludedKeys = ["topic", "sort_by", "order"];
     const validQueryVals = alltopics.map((topic) => {
         return topic.slug
     })
 
-    if(queryKey.length !== 0 && !queryKey.includes("topic") || query.topic === ""){
-        return Promise.reject({status: 400, msg: "bad request"})
-    }
+    if (
+        queryKey.length !== 0 &&
+        !excludedKeys.some((key) => queryKey.includes(key)) ||
+        query.topic === ""
+      ) {
+        return Promise.reject({ status: 400, msg: "bad request" });
+      }
 
     let sqlString = `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.comment_id) AS comment_count
     FROM articles
